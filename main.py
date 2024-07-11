@@ -1,11 +1,15 @@
 from PIL import Image
 import os
+import shutil
 import csv
 import time
 
 info_dir = '.\\info\\'
 pic_dir = '.\\pic\\'
 output_dir = "out/"
+
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
 
 info_arr = os.listdir(info_dir)
 pic_arr = os.listdir(pic_dir)
@@ -94,9 +98,16 @@ for info_file in info_arr:
             return newpic
         def getPic(info_name,id):
             return "pic/"+info_name.split(".")[0]+"_"+id+".tlg.png"
+        if face_data == []:
+            for item in type2_name_data:
+                outfile = output_dir+item["_list"][0]["name"]+"_"+item["_name"]+"_"+info_file.split(".")[0]+".png"
+                print("no expression, copying directly:",outfile)
+                shutil.copy(getPic(info_file,item["_list"][0]["layer_id"]), outfile)
+            continue
+
         for item in back_list:
             for face in face_data:
-                localpicname = output_dir+face["name"]+"_"+item["__name"]+".png";
+                localpicname = output_dir+face["name"]+"_"+item["__name"]+"_"+info_file.split(".")[0]+".png"
                 if os.path.exists(localpicname):
                     print(localpicname,"exists, continue...")
                     continue
